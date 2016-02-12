@@ -1,5 +1,6 @@
 import json
 import os, os.path
+from bs4 import BeautifulSoup
 
 def finditem(obj, key):
     if key in obj: return obj[key]
@@ -19,7 +20,9 @@ with open(jsonfile) as data_file:
 coll_titel="Prentenboeken van 1810 tot 1950"
 coll_home = "http://www.geheugenvannederland.nl/?/nl/collecties/prentenboeken_van_1810_tot_1950"
 
-HTMLoutputfile = open("index.html", "w")
+file="index.html"
+
+HTMLoutputfile = open(file, "w")
 HTMLoutputfile.write("<!DOCTYPE html><html><head><title>Titels in GVN:"+coll_titel+"</title><meta http-equiv='content-type' content='text/html;charset=utf-8'/></head><body>")
 HTMLoutputfile.write("<style type='text/css'></style>")
 HTMLoutputfile.write("<h1>Titels in <a href='"+coll_home+"'>GVN:"+coll_titel+"</a></h1>")
@@ -41,3 +44,12 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
 HTMLoutputfile.write("</ol>")
 HTMLoutputfile.write("</body></html>")
 HTMLoutputfile.close()
+
+# make html code beautiful // indent and stuff
+inputfile = open(file, "r")
+soup = BeautifulSoup(inputfile, 'html.parser')
+inputfile.close()
+outputfile = open(file, "w")
+outputfile.write(soup.prettify())
+outputfile.close()
+

@@ -2,6 +2,7 @@
 import os, os.path
 import json
 import requests
+from bs4 import BeautifulSoup
 
 def finditem(obj, key):
     if key in obj: return obj[key]
@@ -129,7 +130,9 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
     #     print(a)
     #     print(b+"\n -------")
 
-    HTMLoutputfile = open(ppn+".html", "w")
+    file=str(ppn)+".html"
+
+    HTMLoutputfile = open(str(ppn)+".html", "w")
     HTMLoutputfile.write("<!DOCTYPE html><html><head><title>Beelden voor GVN:PRB01 -- PPN=" +ppn+"</title><meta http-equiv='content-type' content='text/html;charset=utf-8'/></head><body>")
     HTMLoutputfile.write("<style type='text/css'></style>")
     HTMLoutputfile.write("<a href='../index.html'><< Terug naar overzichtspagina</a></style>")
@@ -196,6 +199,13 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
     HTMLoutputfile.write("</body></html>")
     HTMLoutputfile.close()
 
+    #make html code beautiful // indent and stuff
+    inputfile = open(file, "r")
+    soup = BeautifulSoup(inputfile, 'html.parser')
+    inputfile.close()
+    outputfile = open(file, "w")
+    outputfile.write(soup.prettify())
+    outputfile.close()
 
 
 # XMLoutputfile.write("<?xml version='1.0' encoding='UTF-8'?>\n")
