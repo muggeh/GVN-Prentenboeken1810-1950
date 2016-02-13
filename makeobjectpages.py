@@ -51,25 +51,30 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
     if str(contributorlist) != "None":
         if isinstance(contributorlist, dict): # contributorlist = dict
             if contributorlist['dcx:role'] == "uitgever":
-                uitgeverstring=str(contributorlist['content'])
+                #switch around lastname and firstname of drukker, uitgever, author - see http://stackoverflow.com/questions/15704943/switch-lastname-firstname-to-firstname-lastname-inside-list
+                uitgeverstring=" / ".join(contributorlist['content'].split(": ")[::-1])
             elif contributorlist['dcx:role'] == "drukker":
-                drukkerstring=str(contributorlist['content'])
+                drukkerstring=" / ".join(contributorlist['content'].split(": ")[::-1])
             elif contributorlist['dcx:role'] == "auteur":
-                auteurstring=str(contributorlist['content'])
+                auteurstring=" / ".join(contributorlist['content'].split(": ")[::-1])
             else: print("AAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAAAAAA")
 
         else: # contributorlist = list of dicts
             for dic in contributorlist:
                 if dic['dcx:role'] == "uitgever":
                     uitgeverlist.append(dic['content'])
+                    #switch around lastname and firstname of drukker, uitgever, authors - see http://stackoverflow.com/questions/15704943/switch-lastname-firstname-to-firstname-lastname-inside-list
+                    uitgeverlist2=[" / ".join(uitgever.split(": ")[::-1]) for uitgever in uitgeverlist]
                 elif dic['dcx:role'] == "drukker":
                     drukkerlist.append(dic['content'])
+                    drukkerlist2=[" / ".join(drukker.split(": ")[::-1]) for drukker in drukkerlist]
                 elif dic['dcx:role'] == "auteur":
                     auteurlist.append(dic['content'])
+                    auteurlist2=[" ".join(auteur.split(", ")[::-1]) for auteur in auteurlist]
                 else: print("AAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAAAAAA")
-            uitgeverstring='; '.join(map(str, uitgeverlist))
-            drukkerstring='; '.join(map(str, drukkerlist))
-            auteurstring='; '.join(map(str, auteurlist))
+            uitgeverstring='; '.join(map(str, uitgeverlist2))
+            drukkerstring='; '.join(map(str, drukkerlist2))
+            auteurstring='; '.join(map(str, auteurlist2))
             #print(str(auteurstring))
 
     taglist=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book],"dc:subject")
@@ -96,7 +101,7 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
         if isinstance(descriptionlist, str):
             descriptionstring=str(descriptionlist)
         else:
-            descriptionstring=' '.join(map(str, descriptionlist))
+            descriptionstring=' -- '.join(map(str, descriptionlist))
 
     annotationlist=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book],"dcx:annotation")
     annotationstring = ""
@@ -133,7 +138,7 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
     file=str(ppn)+".html"
 
     HTMLoutputfile = open(str(ppn)+".html", "w")
-    HTMLoutputfile.write("<!DOCTYPE html><html><head><title>Beelden voor GVN:PRB01 -- PPN=" +ppn+"</title><meta http-equiv='content-type' content='text/html;charset=utf-8'/></head><body>")
+    HTMLoutputfile.write("<!DOCTYPE html><html><head><title>Beelden voor GVN:PRB01 -- PPN=" +ppn+"</title><meta http-equiv='content-type' content='text/html;charset=utf-8'/><link href='../lightbox/dist/css/lightbox.css' rel='stylesheet'></head><body>")
     HTMLoutputfile.write("<style type='text/css'></style>")
     HTMLoutputfile.write("<a href='../index.html'><< Terug naar overzichtspagina</a></style>")
     HTMLoutputfile.write("<h1>Collectie GVN:PRB01 -- PPN= "+ppn+"</h1>")
@@ -148,9 +153,9 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
     if auteurstring:
         HTMLoutputfile.write("<b>Auteur(s):</b> "+auteurstring+"<br/>")
     if uitgeverstring:
-        HTMLoutputfile.write("<b>Plaats/naam uitgever:</b> "+uitgeverstring+"<br/>")
+        HTMLoutputfile.write("<b>Naam/plaats uitgever(s):</b> "+uitgeverstring+"<br/>")
     if drukkerstring:
-        HTMLoutputfile.write("<b>Plaats/naam drukker:</b> "+drukkerstring+"<br/>")
+        HTMLoutputfile.write("<b>Naam/plaats drukker(s):</b> "+drukkerstring+"<br/>")
 
     if descriptionstring:
         HTMLoutputfile.write("<br/><b>Beschrijving:</b> "+descriptionstring+"<br/><br/>")
@@ -170,7 +175,7 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
         for j in range(1,rowwidth+1):
             #r = requests.head(thumb_url+"&count="+str(rowwidth*i+j)+"&role=page")
             #if int(r.status_code) == 200:
-            HTMLoutputfile.write("<img src='"+thumb_url+"&count="+str(rowwidth*i+j)+"&role=page'><a href='"+thumb_baseurl+"&role=page&count=" + str(rowwidth*i+j) + "&role=image&size=large'>Image"+str(j+rowwidth*i)+"</a>")
+            HTMLoutputfile.write("<a data-lightbox='"+ppn+"' href='"+thumb_baseurl+"&role=page&count=" + str(rowwidth*i+j) + "&role=image&size=large'><img src='"+thumb_url+"&count="+str(rowwidth*i+j)+"&role=page'/></a>")
             numberofimages=numberofimages+1
     HTMLoutputfile.write("<br/><br/>")
     HTMLoutputfile.write("Aantal beelden = "+  str(numberofimages) +"<br/><br/>")
@@ -192,11 +197,11 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
                 title2=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][boek], "dc:title")
                 thumbnail2=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][boek],"dcx:thumbnail")
                 thumb_url2=thumbnail2['content']
-                boekstring = boekstring + "<li><img src='"+thumb_url2+"' width='50' align='center'>&nbsp;&nbsp;<a href='"+ppn2+".html'>"+title2+"</a><br/><br/></li>"
+                boekstring = boekstring + "<li><img src='"+thumb_url2+"' width='50' align='center'>&nbsp;&nbsp;<a href='"+ppn2+".html'>"+title2.split(" / ")[0]+"</a><br/><br/></li>"
                 teller=teller+1
         HTMLoutputfile.write("<b>Alle "+str(teller)+" boeken in de serie "+thisParentID+":</b>"+boekstring+"</ol>")
 
-    HTMLoutputfile.write("</body></html>")
+    HTMLoutputfile.write("<script src='../lightbox/dist/js/lightbox-plus-jquery.js'></script></body></html>")
     HTMLoutputfile.close()
 
     #make html code beautiful // indent and stuff
