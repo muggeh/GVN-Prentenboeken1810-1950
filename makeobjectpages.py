@@ -28,14 +28,18 @@ for the_file in os.listdir(folder):
         os.unlink(file_path)
 
 
+
 for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"])):
 
-    ppn_long = finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book], "dcx:recordIdentifier")#PRB01:175094691
-    ppn=ppn_long.split(":")[1]#175094691
+    #============================================================================
 
-    title=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book], "dc:title")
-    date=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book],"dcterms:created")
-    objectholder=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book],"dcx:recordRights") #in welke collectie zit het boek?
+    ppn_long = finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book], "dcx:recordIdentifier")#PRB01:175094691
+    ppn = ppn_long.split(":")[1]#175094691
+
+    title = finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book], "dc:title")
+    date = finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book],"dcterms:created")
+    objectholder = finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book],"dcx:recordRights") #in welke collectie zit het boek?
+    booksize = finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book], "dcterms:extent")
 
     thumbnail=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book],"dcx:thumbnail")
     thumb_url=thumbnail['content']        #http://resolver.kb.nl/resolve?urn=urn:gvn:PRB01:6333948X&role=thumbnail
@@ -109,7 +113,7 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
         if isinstance(annotationlist, str):
             annotationstring=str(annotationlist)
         else:
-            annotationstring='<li>'.join(map(str, annotationlist))
+            annotationstring='</li><li>'.join(map(str, annotationlist))
 
     identifier=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book],"dc:identifier")
     GvNwebsiteURL=[]
@@ -124,19 +128,9 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
         if dic['xsi:type'] == "parent":
             thisParentID=str(dic['content'])
 
-    thumbnail=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book],"dcx:thumbnail")
-    thumb_url=thumbnail['content']
-
-
-    # a = GvNwebsiteURL[0].split("PRB01:")[1]
-    # b = thumb_baseurl.split("PRB01:")[1]
-    # if a != b:
-    #     print("DIFFERENT!!")
-    #     print(a)
-    #     print(b+"\n -------")
+    #============================================================================
 
     file=str(ppn)+".html"
-
     HTMLoutputfile = open(str(ppn)+".html", "w")
     HTMLoutputfile.write("<!DOCTYPE html><html><head><title>Beelden voor GVN:PRB01 -- PPN=" +ppn+"</title><meta http-equiv='content-type' content='text/html;charset=utf-8'/><link href='../lightbox/dist/css/lightbox.css' rel='stylesheet'></head><body>")
     HTMLoutputfile.write("<style type='text/css'></style>")
@@ -153,14 +147,16 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
     if auteurstring:
         HTMLoutputfile.write("<b>Auteur(s):</b> "+auteurstring+"<br/>")
     if uitgeverstring:
-        HTMLoutputfile.write("<b>Naam/plaats uitgever(s):</b> "+uitgeverstring+"<br/>")
+        HTMLoutputfile.write("<b>Naam / plaats uitgever(s):</b> "+uitgeverstring+"<br/>")
     if drukkerstring:
-        HTMLoutputfile.write("<b>Naam/plaats drukker(s):</b> "+drukkerstring+"<br/>")
+        HTMLoutputfile.write("<b>Naam / plaats drukker(s):</b> "+drukkerstring+"<br/>")
 
     if descriptionstring:
         HTMLoutputfile.write("<br/><b>Beschrijving:</b> "+descriptionstring+"<br/><br/>")
+    if booksize:
+        HTMLoutputfile.write("<b>Afmetingen:</b> "+booksize+"<br/>")
     if annotationstring:
-        HTMLoutputfile.write("<b>Annotatie(s):</b><ul><li> "+annotationstring+"</ul>")
+        HTMLoutputfile.write("<b>Opmerkingen:</b><ul><li> "+annotationstring+"</li></ul>")
     if tagstring:
         HTMLoutputfile.write("<b>Tags:</b> "+tagstring+"<br/><br/>")
 
