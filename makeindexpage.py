@@ -10,8 +10,9 @@ def finditem(obj, key):
             if item is not None:
                 return item
 
+outputdirname="output"
 current_dir = os.path.dirname(os.path.realpath(__file__))
-outputdir=os.path.join(current_dir, "output")
+outputdir=os.path.join(current_dir, outputdirname)
 
 jsonfile="SRUdump_GvN_PRB01_07022016.json"
 with open(jsonfile) as data_file:
@@ -39,7 +40,7 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
     thumbnail=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][book],"dcx:thumbnail")
     thumb_url=thumbnail['content']  #http://resolver.kb.nl/resolve?urn=urn:gvn:PRB01:6333948X&role=thumbnail
 
-    HTMLoutputfile.write("<li><img src='"+thumb_url+"' width='50' align='center'>&nbsp;&nbsp;<a href='/"+outputdir+"/"+ppn+".html'>"+str(titel_kort) +"</a>" + " -- " + str(date) + " -- ppn=" + str(ppn)+"<br/><br/></li>")
+    HTMLoutputfile.write("<li><img src='"+thumb_url+"' width='50' align='center'/>&nbsp;&nbsp;<a href='"+outputdirname+"/"+ppn+".html'>"+str(titel_kort) +"</a>" + " (" + str(date) + ")<br/><br/></li>")
 
 HTMLoutputfile.write("</ol>")
 HTMLoutputfile.write("</body></html>")

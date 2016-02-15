@@ -16,8 +16,9 @@ jsonfile="SRUdump_GvN_PRB01_07022016.json"
 with open(jsonfile) as data_file:
     data = json.load(data_file)
 
+outputdirname="output"
 current_dir = os.path.dirname(os.path.realpath(__file__))
-outputdir=os.path.join(current_dir, "output")
+outputdir=os.path.join(current_dir, outputdirname)
 os.chdir(outputdir)
 
 #bestaande html-files in die dir weggooien voordat er nieuwe naar toe geschreven worden
@@ -132,8 +133,14 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
 
     file=str(ppn)+".html"
     HTMLoutputfile = open(str(ppn)+".html", "w")
-    HTMLoutputfile.write("<!DOCTYPE html><html><head><title>Beelden voor GVN:PRB01 -- PPN=" +ppn+"</title><meta http-equiv='content-type' content='text/html;charset=utf-8'/><link href='../lightbox/dist/css/lightbox.css' rel='stylesheet'></head><body>")
-    HTMLoutputfile.write("<style type='text/css'></style>")
+    HTMLoutputfile.write("<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'>")
+    HTMLoutputfile.write("<html>")
+    HTMLoutputfile.write("<head>")
+    HTMLoutputfile.write("<title>Beelden voor GVN:PRB01 -- PPN=" +ppn+"</title>")
+    HTMLoutputfile.write("<meta http-equiv='content-type' content='text/html;charset=utf-8'/>")
+    HTMLoutputfile.write("<link href='../lightbox/dist/css/lightbox.css' rel='stylesheet'>")
+    HTMLoutputfile.write("</head>")
+    HTMLoutputfile.write("<body>")
     HTMLoutputfile.write("<a href='../index.html'><< Terug naar overzichtspagina</a></style>")
     HTMLoutputfile.write("<h1>Collectie GVN:PRB01 -- PPN= "+ppn+"</h1>")
     HTMLoutputfile.write("<img src='"+thumb_url+"' align='left' vspace='0' hspace='10'/>")
@@ -169,10 +176,10 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
     numberofimages =0
     for i in range(0,int(maximages/rowwidth)+1):
         for j in range(1,rowwidth+1):
-            #r = requests.head(thumb_url+"&count="+str(rowwidth*i+j)+"&role=page")
-            #if int(r.status_code) == 200:
-            HTMLoutputfile.write("<a data-lightbox='"+ppn+"' href='"+thumb_baseurl+"&role=page&count=" + str(rowwidth*i+j) + "&role=image&size=large'><img src='"+thumb_url+"&count="+str(rowwidth*i+j)+"&role=page'/></a>")
-            numberofimages=numberofimages+1
+            r = requests.head(thumb_url+"&count="+str(rowwidth*i+j)+"&role=page")
+            if int(r.status_code) == 200:
+                HTMLoutputfile.write("<a data-lightbox='"+ppn+"' href='"+thumb_baseurl+"&role=page&count=" + str(rowwidth*i+j) + "&role=image&size=large'><img src='"+thumb_url+"&count="+str(rowwidth*i+j)+"&role=page'/></a>")
+                numberofimages=numberofimages+1
     HTMLoutputfile.write("<br/><br/>")
     HTMLoutputfile.write("Aantal beelden = "+  str(numberofimages) +"<br/><br/>")
 
@@ -193,11 +200,13 @@ for book in range(len(data["srw:searchRetrieveResponse"]["srw:records"]["srw:rec
                 title2=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][boek], "dc:title")
                 thumbnail2=finditem(data["srw:searchRetrieveResponse"]["srw:records"]["srw:record"][boek],"dcx:thumbnail")
                 thumb_url2=thumbnail2['content']
-                boekstring = boekstring + "<li><img src='"+thumb_url2+"' width='50' align='center'>&nbsp;&nbsp;<a href='"+ppn2+".html'>"+title2.split(" / ")[0]+"</a><br/><br/></li>"
+                boekstring = boekstring + "<li><img src='"+thumb_url2+"' width='50' align='center'/>&nbsp;&nbsp;<a href='"+ppn2+".html'>"+title2.split(" / ")[0]+"</a><br/><br/></li>"
                 teller=teller+1
         HTMLoutputfile.write("<b>Alle "+str(teller)+" boeken in de serie "+thisParentID+":</b>"+boekstring+"</ol>")
 
-    HTMLoutputfile.write("<script src='../lightbox/dist/js/lightbox-plus-jquery.js'></script></body></html>")
+    HTMLoutputfile.write("<script src='../lightbox/dist/js/lightbox-plus-jquery.js'></script>")
+    HTMLoutputfile.write("</body>")
+    HTMLoutputfile.write("</html>")
     HTMLoutputfile.close()
 
     #make html code beautiful // indent and stuff
