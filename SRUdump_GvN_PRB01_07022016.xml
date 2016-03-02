@@ -7560,7 +7560,7 @@
                     <dc:identifier xsi:type="mpeg21">http://resolver.kb.nl/resolve?urn=urn:gvn:PRB01:15666710X</dc:identifier>
                     <dc:identifier xsi:type="dcterms:PPN">15666710X</dc:identifier>
                     <dcx:thumbnail xsi:type="dcterms:URI">http://resolver.kb.nl/resolve?urn=urn:gvn:PRB01:15666710X&amp;role=thumbnail</dcx:thumbnail>
-                    <dc:title>[Witte kat met rode strik]</dc:title>
+                    <dc:title>Witte kat met rode strik</dc:title>
                     <dcterms:alternative>Op de boerderij</dcterms:alternative>
                     <dc:creator>Osswald, Eugen</dc:creator>
                     <dc:contributor dcx:role="auteur">Osswald, Eugen</dc:contributor>
@@ -15172,7 +15172,7 @@
                     <dc:identifier xsi:type="mpeg21">http://resolver.kb.nl/resolve?urn=urn:gvn:PRB01:864245041</dc:identifier>
                     <dc:identifier xsi:type="dcterms:PPN">864245041</dc:identifier>
                     <dcx:thumbnail xsi:type="dcterms:URI">http://resolver.kb.nl/resolve?urn=urn:gvn:PRB01:864245041&amp;role=thumbnail</dcx:thumbnail>
-                    <dc:title>Wie smult er mêe?, of De konings-pudding : eene vertelling / van F.H. van Leent</dc:title>
+                    <dc:title>Wie smult er mee?, of De konings-pudding : eene vertelling / van F.H. van Leent</dc:title>
                     <dc:creator>Leent, F.H. van</dc:creator>
                     <dc:contributor dcx:role="auteur">Leent, F.H. van</dc:contributor>
                     <dc:contributor dcx:role="uitgever">Amsterdam: H.C.A. Campagne &amp; Zoon</dc:contributor>
