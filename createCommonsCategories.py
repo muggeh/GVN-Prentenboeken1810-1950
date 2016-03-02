@@ -11,8 +11,8 @@ import requests
 
 #Login to the MediaWiki API to write categories to Commons - Code from https://www.mediawiki.org/wiki/API:Edit/Editing_with_Python
 
-username = 'OlafJanssen'
-password = '5tgb6yhn'
+username = 'user'
+password = 'pass'
 baseurl = 'https://test.wikipedia.org/w/'
 
 # Login request
